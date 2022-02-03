@@ -23,7 +23,7 @@ scoreboard = 'm.'
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 's:e:b:h', ['text=', 'step='])
-except getopt.getopt.GetoptError:
+except getopt.GetoptError:
     help(-1)
 
 for opt, arg in opts:

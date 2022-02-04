@@ -20,9 +20,10 @@ step = 2
 
 entry = 't0'
 scoreboard = 'm.'
+doAddRegion = False
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 's:e:b:h', ['text=', 'step='])
+    opts, args = getopt.getopt(sys.argv[1:], 's:e:b:hr', ['text=', 'step='])
 except getopt.GetoptError:
     help(-1)
 
@@ -37,6 +38,8 @@ for opt, arg in opts:
         text = arg
     elif opt == '--step':
         step = int(arg)
+    elif opt == '-r':
+        doAddRegion = True
     elif opt == '-h':
         help()
 
@@ -50,9 +53,14 @@ base = 'execute if score %s %s matches {tick} run title @a subtitle "{text}"\n' 
 build_text = ''
 
 with open('output.mcfunction', 'w', encoding='utf-8') as output:
+    if doAddRegion:
+        output.write('#region %d..%d %s\n' %
+                     (startTick, startTick + len(text) * step, text))
     for char in text:
         build_text += char
         output.write(base.format(tick=startTick,
                                  text=string_insert(build_text, len(build_text) - 1, '\u00a77')))
         startTick += step
     output.write(base.format(tick=startTick, text=text))
+    if doAddRegion:
+        output.write('#endregion\n')
